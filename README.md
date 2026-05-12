@@ -1,6 +1,6 @@
 # DistriCore API
 
-**DistriCore — One platform for modern distribution.**
+**DistriCore : One platform for modern distribution.**
 
 DistriCore is an API-first Distribution Management Platform designed for **FMCG, CPG, FMCD, OTC Pharma, and general distribution businesses**.
 
