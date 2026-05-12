@@ -1363,4 +1363,4 @@ This project is proprietary unless a separate license is provided.
 
 **DistriCore Platform Team**
 
-For questions, contact the project owner or technical lead.
+For questions, contact us: astartupcto@gmail.com
