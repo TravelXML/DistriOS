@@ -1,0 +1,42 @@
+package com.districore.platform.scheme;
+
+import com.districore.platform.common.TenantAwareEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+@Entity
+@Table(name = "schemes")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Scheme extends TenantAwareEntity {
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    private SchemeType type;
+
+    private BigDecimal discountValue;
+    private Integer buyQuantity;
+    private Integer getQuantity;
+    private String targetCategory;
+    private boolean active = true;
+}
