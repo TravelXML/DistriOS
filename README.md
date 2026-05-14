@@ -338,3 +338,36 @@ curl -X POST http://localhost:8080/api/v1/orders \
 4. Add product recall impact and stock movement reconciliation.
 5. Build integration adapters for ERP and tax validation.
 6. Add comprehensive JUnit + Testcontainers coverage for key APIs.
+
+# How to Run
+Local Development
+## 1. Build the project
+mvn clean package
+
+## 2. Start dependencies using Docker
+docker compose up -d
+
+## 3. Check Docker services
+docker compose ps
+
+## 4. Run the application
+java -jar target/districore-api-0.1.0.jar
+Run with Docker Compose
+docker compose up --build
+Reset Docker Environment
+newgrp docker
+sudo docker compose down -v
+sudo docker compose up -d
+sleep 5
+java -jar target/districore-api-0.1.0.jar
+Run with Test Profile
+java -jar target/districore-api-0.1.0.jar --spring.profiles.active=test
+Access Points
+Application: http://localhost:8080
+Swagger UI: http://localhost:8080/swagger-ui/index.html
+API Base: /api/v1
+Tenant Header: X-Tenant-Id: default
+Default Credentials
+Username: admin
+Password: Admin123!
+Tenant: default
