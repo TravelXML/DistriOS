@@ -1,4 +1,4 @@
-# DistriCore API
+# DistriCore API - DMS
 
 DistriCore is an API-first distribution management platform designed for modern distribution businesses across FMCG, CPG, FMCD, OTC Pharma, and general distribution.
 
