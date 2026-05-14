@@ -1566,12 +1566,6 @@ API-first Distribution Management System for FMCG, CPG, FMCD, OTC Pharma, rurban
 
 ---
 
-## License
-
-This project is proprietary unless a separate open-source license is added.
-
----
-
 ## Maintainer
 
 **DistriCore Platform Team**
