@@ -77,7 +77,7 @@ The application follows a modular monolith architecture with clean separation of
 
 1. **Clone and build:**
 ```bash
-git clone <repository>
+git clone https://github.com/TravelXML/DistriOS.git
 cd DistriOS
 mvn clean package
 ```
