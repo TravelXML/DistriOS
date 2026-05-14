@@ -1,11 +1,11 @@
-# DistriOS — DistriCore API
+# DistriOS - DistriCore a DMS API
 
 <p align="center">
   <strong>API-first Distribution Management System for FMCG, CPG, FMCD, OTC Pharma, rurban markets, and general distribution businesses.</strong>
 </p>
 
 <p align="center">
-  <em>DistriCore — One platform for modern distribution.</em>
+  <em>DistriCore - One platform for modern retail distribution.</em>
 </p>
 
 <p align="center">
