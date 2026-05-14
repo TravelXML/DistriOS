@@ -27,16 +27,20 @@ public class InvoiceService {
     public InvoiceResponse generateFromOrder(UUID orderId) {
         Order order = orderRepository.findByIdAndTenantId(orderId, TenantContext.getTenantId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        BigDecimal total = order.getLineItems().stream().map(item -> item.getTotalPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
-        Invoice invoice = new Invoice();
-        invoice.setOrderId(orderId.toString());
-        invoice.setRetailerId(order.getRetailerId());
-        invoice.setTotalAmount(total);
-        invoice.setGeneratedAt(Instant.now());
-        invoice.setStatus(InvoiceStatus.GENERATED);
-        invoice.setTenantId(TenantContext.getTenantId());
-        invoiceRepository.save(invoice);
-        return toResponse(invoice);
+        return invoiceRepository.findByOrderIdAndTenantId(orderId.toString(), TenantContext.getTenantId())
+                .map(this::toResponse)
+                .orElseGet(() -> {
+                    BigDecimal total = order.getLineItems().stream().map(item -> item.getTotalPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    Invoice invoice = new Invoice();
+                    invoice.setOrderId(orderId.toString());
+                    invoice.setRetailerId(order.getRetailerId());
+                    invoice.setTotalAmount(total);
+                    invoice.setGeneratedAt(Instant.now());
+                    invoice.setStatus(InvoiceStatus.GENERATED);
+                    invoice.setTenantId(TenantContext.getTenantId());
+                    invoiceRepository.save(invoice);
+                    return toResponse(invoice);
+                });
     }
 
     public List<InvoiceResponse> listInvoices() {

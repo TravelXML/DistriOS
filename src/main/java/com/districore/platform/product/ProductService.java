@@ -2,6 +2,9 @@ package com.districore.platform.product;
 
 import com.districore.platform.common.ResourceNotFoundException;
 import com.districore.platform.common.TenantContext;
+import com.districore.platform.product.ProductSerialNumberRepository;
+import com.districore.platform.product.ProductSerialNumberRequest;
+import com.districore.platform.product.ProductSerialNumberResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +20,20 @@ public class ProductService {
     private final ProductCategoryRepository categoryRepository;
     private final UomRepository uomRepository;
     private final HsnCodeRepository hsnCodeRepository;
+    private final ProductSerialNumberRepository serialNumberRepository;
 
     public ProductService(ProductRepository productRepository,
                           BrandRepository brandRepository,
                           ProductCategoryRepository categoryRepository,
                           UomRepository uomRepository,
-                          HsnCodeRepository hsnCodeRepository) {
+                          HsnCodeRepository hsnCodeRepository,
+                          ProductSerialNumberRepository serialNumberRepository) {
         this.productRepository = productRepository;
         this.brandRepository = brandRepository;
         this.categoryRepository = categoryRepository;
         this.uomRepository = uomRepository;
         this.hsnCodeRepository = hsnCodeRepository;
+        this.serialNumberRepository = serialNumberRepository;
     }
 
     public ProductResponse createProduct(ProductRequest request) {
@@ -113,6 +119,23 @@ public class ProductService {
         product.setStatus(request.getStatus());
         productRepository.save(product);
         return toResponse(product);
+    }
+
+    public ProductSerialNumberResponse addSerialNumber(UUID productId, ProductSerialNumberRequest request) {
+        Product product = findById(productId);
+        ProductSerialNumber serial = new ProductSerialNumber();
+        serial.setProduct(product);
+        serial.setSerialNumber(request.getSerialNumber());
+        serial.setTenantId(TenantContext.getTenantId());
+        serialNumberRepository.save(serial);
+        return new ProductSerialNumberResponse(serial.getId().toString(), serial.getSerialNumber(), product.getId().toString());
+    }
+
+    public java.util.List<ProductSerialNumberResponse> listSerialNumbers(UUID productId) {
+        findById(productId);
+        return serialNumberRepository.findByProductIdAndTenantId(productId, TenantContext.getTenantId()).stream()
+                .map(serial -> new ProductSerialNumberResponse(serial.getId().toString(), serial.getSerialNumber(), serial.getProduct().getId().toString()))
+                .collect(Collectors.toList());
     }
 
     private Product findById(UUID id) {

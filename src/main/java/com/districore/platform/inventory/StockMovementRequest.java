@@ -17,4 +17,5 @@ public class StockMovementRequest {
     @NotNull
     private InventoryStockType stockType;
     private String referenceId;
+    private String idempotencyKey;
 }

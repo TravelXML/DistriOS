@@ -79,4 +79,13 @@ public class OrderController {
                 .data(service.deliverOrder(id))
                 .build());
     }
+
+    @GetMapping("/{id}/status-history")
+    public ResponseEntity<ApiResponse<java.util.List<OrderStatusHistoryResponse>>> statusHistory(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.<java.util.List<OrderStatusHistoryResponse>>builder()
+                .success(true)
+                .message("Order status history retrieved")
+                .data(service.getStatusHistory(id))
+                .build());
+    }
 }

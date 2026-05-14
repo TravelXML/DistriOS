@@ -1,6 +1,9 @@
 package com.districore.platform.retailer;
 
 import com.districore.platform.common.ApiResponse;
+import com.districore.platform.loyalty.LoyaltyService;
+import com.districore.platform.order.OrderResponse;
+import com.districore.platform.scheme.SchemeResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +15,11 @@ import java.util.UUID;
 @RequestMapping("/api/v1/retailers")
 public class RetailerController {
     private final RetailerService service;
+    private final LoyaltyService loyaltyService;
 
-    public RetailerController(RetailerService service) {
+    public RetailerController(RetailerService service, LoyaltyService loyaltyService) {
         this.service = service;
+        this.loyaltyService = loyaltyService;
     }
 
     @PostMapping
@@ -86,6 +91,33 @@ public class RetailerController {
                 .success(true)
                 .message("Retailer ledger")
                 .data(service.getLedger(id))
+                .build());
+    }
+
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> orders(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.<List<OrderResponse>>builder()
+                .success(true)
+                .message("Retailer orders retrieved")
+                .data(service.listOrders(id))
+                .build());
+    }
+
+    @GetMapping("/{id}/schemes")
+    public ResponseEntity<ApiResponse<List<SchemeResponse>>> schemes(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.<List<SchemeResponse>>builder()
+                .success(true)
+                .message("Retailer eligible schemes retrieved")
+                .data(service.listEligibleSchemes(id))
+                .build());
+    }
+
+    @GetMapping("/{id}/loyalty")
+    public ResponseEntity<ApiResponse<com.districore.platform.loyalty.LoyaltyResponse>> loyalty(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.<com.districore.platform.loyalty.LoyaltyResponse>builder()
+                .success(true)
+                .message("Retailer loyalty summary retrieved")
+                .data(loyaltyService.getAccount(id.toString()))
                 .build());
     }
 }

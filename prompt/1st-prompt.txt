@@ -1,0 +1,949 @@
+You are a senior enterprise Java architect, principal backend engineer, and product architect.
+
+Build a complete API-first Distribution Management Platform named:
+
+DistriCore
+
+Tagline:
+DistriCore — One platform for modern distribution.
+
+Product positioning:
+DistriCore is an API-first Distribution Management Platform for FMCG, CPG, FMCD, OTC Pharma, and general distribution businesses.
+
+It connects companies, distributors, stockists, dealers, retailers, sales teams, warehouses, invoices, schemes, claims, inventory, loyalty, analytics, AI insights, and integrations into one modern distribution operating system.
+
+The software should not be designed only for FMCG. It must be configurable for multiple industry verticals.
+
+SUPPORTED INDUSTRY VERTICALS
+
+Create an enum:
+
+IndustryVertical:
+- FMCG
+- CPG
+- FMCD
+- OTC_PHARMA
+- GENERAL_DISTRIBUTION
+
+Every company/tenant should have an industryVertical field.
+
+Business behavior should be configurable based on industryVertical.
+
+Industry-specific rules:
+
+FMCG / CPG:
+- SKU-based product management
+- UOM
+- pack size
+- case size
+- MRP
+- schemes
+- distributor-retailer mapping
+- primary and secondary sales
+- beat sales
+- batch optional
+- expiry optional depending on product type
+
+FMCD:
+- serial number tracking
+- warranty tracking
+- dealer/distributor/channel partner model
+- product installation status
+- return/replacement flow
+- warranty claim support
+- high-value inventory tracking
+- demo unit tracking
+
+OTC_PHARMA:
+- batch number mandatory
+- expiry date mandatory
+- MRP mandatory
+- HSN code mandatory
+- GST/tax classification mandatory
+- distributor/retailer drug license support
+- stockist/chemist/channel mapping
+- expired stock handling
+- near-expiry alerts
+- product recall support
+- product composition
+- manufacturer field
+- schedule/category placeholder
+- regulatory document attachment placeholder
+
+MAIN GOAL
+
+Generate a complete production-grade REST API backend for DistriCore using Java and Spring Boot.
+
+This should be a working codebase, not only an architecture description.
+
+The generated project should include:
+- entities
+- DTOs
+- controllers
+- services
+- repositories
+- mappers
+- validations
+- exception handling
+- authentication
+- authorization
+- multi-tenancy
+- audit fields
+- idempotency support
+- API response wrapper
+- database migrations
+- seed data
+- Swagger/OpenAPI documentation
+- Docker Compose
+- tests
+- README
+- sample curl commands
+
+TECH STACK
+
+Use:
+- Java 21 or latest stable LTS Java
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- Spring Security
+- JWT authentication
+- PostgreSQL
+- Redis
+- Flyway
+- OpenAPI / Swagger
+- Maven or Gradle
+- Lombok
+- MapStruct if useful
+- Bean Validation
+- JUnit 5
+- Testcontainers
+- Docker
+- Docker Compose
+
+Optional but structurally prepare for:
+- Kafka / RabbitMQ event publishing
+- Outbox pattern
+- OpenTelemetry
+- Prometheus/Grafana
+- Elasticsearch/OpenSearch
+- Object storage for attachments
+- ERP integration
+- Payment integration
+- WhatsApp/SMS/email notifications
+- AI recommendation services
+
+ARCHITECTURE
+
+Use a modular monolith architecture first.
+
+Design modules cleanly so they can later be extracted into microservices.
+
+Base package:
+
+com.districore.platform
+
+Project name:
+
+districore-api
+
+API base path:
+
+/api/v1
+
+Every API should be versioned.
+
+Do not expose JPA entities directly from controllers.
+Always use request and response DTOs.
+
+Use BigDecimal for all money values.
+
+Use UUID for primary IDs unless there is a strong reason otherwise.
+
+Use proper transaction boundaries.
+
+Use clean domain naming.
+
+Use clear separation:
+- controller
+- service
+- repository
+- entity
+- dto
+- mapper
+- validator
+- event
+
+HIGH-LEVEL MODULES
+
+Create the following packages/modules:
+
+1. common
+   - ApiResponse wrapper
+   - ErrorResponse
+   - GlobalExceptionHandler
+   - BaseEntity
+   - TenantAwareEntity
+   - Audit fields
+   - Pagination utilities
+   - CorrelationId filter
+   - Idempotency support
+   - Constants
+   - Common enums
+   - Validation helpers
+
+2. security / identity
+   - User
+   - Role
+   - Permission
+   - JWT login
+   - refresh token
+   - logout
+   - password hashing
+   - RBAC
+   - method-level authorization
+
+3. tenant / organization
+   - Company
+   - BusinessUnit
+   - Branch
+   - Region
+   - Territory
+   - Route
+   - Beat
+   - Industry configuration
+
+4. distributor
+   - distributor onboarding
+   - distributor branches
+   - distributor credit limit
+   - distributor territory mapping
+   - distributor sales team mapping
+   - distributor drug license for OTC pharma
+   - distributor status management
+
+5. retailer
+   - retailer onboarding
+   - retailer KYC
+   - retailer category/channel
+   - retailer geo-location
+   - retailer credit limit
+   - retailer distributor mapping
+   - retailer beat mapping
+   - retailer ledger summary
+   - retailer drug license for OTC pharma
+
+6. product
+   - product master
+   - SKU
+   - brand
+   - category
+   - sub-category
+   - UOM
+   - HSN code
+   - GST/tax classification
+   - pack size
+   - case size
+   - barcode
+   - batch configuration
+   - expiry configuration
+   - serial number configuration
+   - warranty configuration
+   - product composition
+   - manufacturer
+   - product regulatory fields
+
+7. pricing
+   - price list
+   - price list items
+   - distributor-specific pricing
+   - retailer-specific pricing
+   - region-specific pricing
+   - margin configuration
+   - effective date pricing
+   - price calculation API
+
+8. inventory
+   - warehouse/godown
+   - stock in
+   - stock out
+   - stock adjustment
+   - batch-wise stock
+   - expiry-wise stock
+   - serial-number-wise stock
+   - damaged stock
+   - expired stock
+   - reserved stock
+   - available stock
+   - inventory transaction ledger
+   - near-expiry alerts
+   - low-stock alerts
+   - product recall stock impact
+
+9. order
+   - order creation
+   - order confirmation
+   - order cancellation
+   - order dispatch
+   - order delivery
+   - order status history
+   - order source: ADMIN, DISTRIBUTOR, RETAILER_APP, SFA_APP
+   - idempotency key support
+
+10. invoice
+   - invoice generation from order
+   - invoice line items
+   - tax calculation
+   - HSN-wise tax summary
+   - GST summary
+   - invoice cancellation
+   - credit note placeholder
+   - debit note placeholder
+
+11. scheme
+   - scheme master
+   - quantity discount
+   - value discount
+   - buy X get Y
+   - slab-based scheme
+   - retailer-specific scheme
+   - distributor-specific scheme
+   - region-specific scheme
+   - brand/category/product-specific scheme
+   - scheme simulation
+   - explainable scheme calculation response
+
+12. claim
+   - damage claim
+   - expiry claim
+   - scheme claim
+   - rate difference claim
+   - shortage claim
+   - return claim
+   - warranty claim
+   - replacement claim
+   - recall claim
+   - claim approval workflow
+   - claim attachments metadata
+
+13. sfa
+   - sales force automation
+   - field sales user
+   - beat plan
+   - today route
+   - check-in
+   - check-out
+   - retailer visit
+   - order capture
+   - expense management
+   - task management
+   - supervisor dashboard
+   - van sales placeholder
+
+14. retailerapp
+   - retailer home
+   - product catalogue
+   - recommended products
+   - applicable schemes
+   - cart
+   - order placement
+   - order tracking
+   - complaints
+   - loyalty summary
+
+15. loyalty
+   - loyalty account
+   - earn points
+   - redeem points
+   - loyalty transaction history
+   - retailer loyalty tier
+
+16. complaint
+   - complaint creation
+   - complaint category
+   - assignment
+   - status tracking
+   - resolution notes
+   - closure
+
+17. notification
+   - notification templates
+   - email placeholder
+   - SMS placeholder
+   - WhatsApp placeholder
+   - in-app notifications
+   - event-triggered notifications
+
+18. analytics
+   - sales summary
+   - distributor performance
+   - retailer performance
+   - product performance
+   - scheme performance
+   - stock movement
+   - SFA productivity
+   - claims report
+
+19. ai
+   Keep AI as adapter APIs initially.
+   Do not hard-code heavy ML logic.
+   Create interfaces and mock implementations for:
+   - product recommendations
+   - outlet pulse
+   - route optimization
+   - scheme simulation insight
+   - sales analyzer
+   - target disaggregation
+   - smart nudges
+   - supervisor insights
+
+20. integration
+   - ERP integration placeholder
+   - external tax validation placeholder
+   - payment placeholder
+   - webhook support
+   - event publishing placeholder
+
+CORE BUSINESS RULES
+
+1. Multi-tenancy:
+   Every important business record should belong to a tenant/company.
+   Add tenantId where needed.
+   Create TenantContext.
+   Read tenant from X-Tenant-Id header.
+   Add TenantFilter.
+   Prevent cross-tenant data access.
+
+2. RBAC:
+   Roles:
+   - SUPER_ADMIN
+   - COMPANY_ADMIN
+   - DISTRIBUTOR_ADMIN
+   - SALES_MANAGER
+   - SALES_REP
+   - RETAILER
+   - WAREHOUSE_USER
+   - FINANCE_USER
+   - SUPPORT_USER
+
+3. Audit:
+   Important entities must include:
+   - id
+   - tenantId
+   - createdAt
+   - updatedAt
+   - createdBy
+   - updatedBy
+   - status where applicable
+
+4. Idempotency:
+   Support Idempotency-Key header for:
+   - order creation
+   - invoice generation
+   - stock adjustment
+   - claim submission
+
+5. Standard success response:
+   {
+     "success": true,
+     "message": "Operation completed successfully",
+     "data": {},
+     "correlationId": "..."
+   }
+
+6. Standard error response:
+   {
+     "timestamp": "...",
+     "status": 400,
+     "error": "Bad Request",
+     "message": "...",
+     "path": "...",
+     "correlationId": "..."
+   }
+
+7. Pagination:
+   All list APIs should support:
+   - page
+   - size
+   - sort
+   - search where useful
+
+8. Security:
+   - JWT login
+   - password hashing
+   - refresh token
+   - route protection
+   - role-based access
+   - CORS configuration
+   - input validation
+   - no direct entity exposure
+
+9. Events:
+   Create event classes/interfaces for:
+   - DistributorCreated
+   - RetailerCreated
+   - ProductCreated
+   - PriceUpdated
+   - InventoryAdjusted
+   - OrderCreated
+   - OrderConfirmed
+   - OrderCancelled
+   - InvoiceGenerated
+   - ClaimSubmitted
+   - ClaimApproved
+   - SchemeApplied
+   - SalesVisitCompleted
+   - RetailerInactiveDetected
+   - ProductRecallCreated
+   - NearExpiryDetected
+   - WarrantyClaimSubmitted
+
+10. Inventory:
+   Every stock movement must create an InventoryTransaction.
+
+Stock types:
+- AVAILABLE
+- RESERVED
+- DAMAGED
+- EXPIRED
+- IN_TRANSIT
+- DEMO
+- RETURNED
+
+Transaction types:
+- STOCK_IN
+- STOCK_OUT
+- ADJUSTMENT
+- RESERVATION
+- RELEASE_RESERVATION
+- DISPATCH
+- RETURN
+- DAMAGE
+- EXPIRY
+- RECALL
+- WARRANTY_REPLACEMENT
+
+PRODUCT FIELD REQUIREMENTS
+
+Product should support:
+
+- skuCode
+- productName
+- brand
+- category
+- subCategory
+- industryVertical
+- uom
+- packSize
+- packSizeUom
+- caseSize
+- hsnCode
+- gstRate
+- mrp
+- basePrice
+- barcode
+- batchRequired
+- expiryRequired
+- serialNumberRequired
+- warrantyRequired
+- composition
+- manufacturerName
+- shelfLifeDays
+- warrantyMonths
+- regulatoryCategory
+- status
+
+Add comments or documentation:
+
+UOM:
+Unit of Measure. Example: PCS, KG, LTR, BOX, CASE.
+
+HSN code:
+Tax classification code used for GST/invoicing.
+
+Pack size:
+Quantity inside one sellable unit. Example: 500 ml, 1 kg, 100 tablets.
+
+Case size:
+Number of sellable units inside one carton/case. Example: 24 bottles per case.
+
+ORDER FLOW
+
+Implement order flow:
+
+1. Create order
+2. Validate retailer
+3. Validate distributor
+4. Validate products
+5. Calculate price
+6. Apply eligible schemes
+7. Reserve inventory
+8. Confirm order
+9. Generate invoice
+10. Dispatch
+11. Deliver
+12. Maintain order status history
+
+SCHEME ENGINE
+
+Implement simple but extensible scheme engine.
+
+Support:
+- percentage discount
+- flat discount
+- buy X get Y
+- slab discount
+
+Scheme simulation response should return:
+- original order value
+- discount value
+- free items
+- final order value
+- applied schemes
+- explanation of why scheme was applied
+
+PRICING ENGINE
+
+Implement pricing calculation:
+
+- base price
+- price list by distributor/region
+- retailer-specific override if available
+- distributor-specific override if available
+- tax calculation
+- final price
+
+TAX MODEL
+
+Support GST-like tax model:
+
+- CGST
+- SGST
+- IGST
+- HSN-wise tax summary
+- tax percentage from HSN code
+
+DATABASE MIGRATIONS
+
+Use Flyway.
+
+Create at least:
+- V1__initial_schema.sql
+- V2__seed_master_data.sql
+
+Seed data should include:
+- one company
+- roles
+- permissions
+- admin user
+- sample distributor
+- sample retailer
+- sample product categories
+- sample brands
+- UOMs
+- HSN codes
+- sample FMCG product
+- sample FMCD product
+- sample OTC pharma product
+- sample warehouse
+- sample inventory
+- sample price list
+- sample scheme
+
+API ENDPOINTS
+
+Implement the following APIs.
+
+AUTH APIs:
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh-token
+POST /api/v1/auth/logout
+GET  /api/v1/auth/me
+
+USER APIs:
+POST   /api/v1/users
+GET    /api/v1/users
+GET    /api/v1/users/{id}
+PUT    /api/v1/users/{id}
+PATCH  /api/v1/users/{id}/status
+POST   /api/v1/users/{id}/roles
+
+INDUSTRY CONFIG APIs:
+POST /api/v1/industry-config
+GET  /api/v1/industry-config
+GET  /api/v1/industry-config/{industryVertical}
+PUT  /api/v1/industry-config/{industryVertical}
+
+DISTRIBUTOR APIs:
+POST   /api/v1/distributors
+GET    /api/v1/distributors
+GET    /api/v1/distributors/{id}
+PUT    /api/v1/distributors/{id}
+PATCH  /api/v1/distributors/{id}/status
+POST   /api/v1/distributors/{id}/branches
+GET    /api/v1/distributors/{id}/branches
+POST   /api/v1/distributors/{id}/credit-limit
+POST   /api/v1/distributors/{id}/drug-license
+GET    /api/v1/distributors/{id}/performance-summary
+
+RETAILER APIs:
+POST   /api/v1/retailers
+GET    /api/v1/retailers
+GET    /api/v1/retailers/{id}
+PUT    /api/v1/retailers/{id}
+PATCH  /api/v1/retailers/{id}/status
+POST   /api/v1/retailers/{id}/kyc
+POST   /api/v1/retailers/{id}/drug-license
+GET    /api/v1/retailers/{id}/ledger
+GET    /api/v1/retailers/{id}/orders
+GET    /api/v1/retailers/{id}/schemes
+GET    /api/v1/retailers/{id}/loyalty
+
+PRODUCT APIs:
+POST   /api/v1/products
+GET    /api/v1/products
+GET    /api/v1/products/{id}
+PUT    /api/v1/products/{id}
+PATCH  /api/v1/products/{id}/status
+POST   /api/v1/products/{productId}/serial-numbers
+GET    /api/v1/products/{productId}/serial-numbers
+POST   /api/v1/product-categories
+GET    /api/v1/product-categories
+POST   /api/v1/brands
+GET    /api/v1/brands
+POST   /api/v1/uoms
+GET    /api/v1/uoms
+POST   /api/v1/hsn-codes
+GET    /api/v1/hsn-codes
+
+PRICING APIs:
+POST   /api/v1/price-lists
+GET    /api/v1/price-lists
+GET    /api/v1/price-lists/{id}
+POST   /api/v1/price-lists/{id}/items
+GET    /api/v1/products/{productId}/prices
+GET    /api/v1/retailers/{retailerId}/applicable-prices
+POST   /api/v1/pricing/calculate
+
+INVENTORY APIs:
+GET    /api/v1/inventory
+GET    /api/v1/inventory/warehouses/{warehouseId}
+POST   /api/v1/inventory/stock-in
+POST   /api/v1/inventory/stock-out
+POST   /api/v1/inventory/adjustments
+GET    /api/v1/inventory/transactions
+GET    /api/v1/inventory/low-stock
+GET    /api/v1/inventory/near-expiry
+GET    /api/v1/inventory/expired-stock
+GET    /api/v1/inventory/products/{productId}/availability
+
+ORDER APIs:
+POST   /api/v1/orders
+GET    /api/v1/orders
+GET    /api/v1/orders/{id}
+PATCH  /api/v1/orders/{id}/confirm
+PATCH  /api/v1/orders/{id}/cancel
+PATCH  /api/v1/orders/{id}/dispatch
+PATCH  /api/v1/orders/{id}/deliver
+GET    /api/v1/orders/{id}/status-history
+
+INVOICE APIs:
+POST   /api/v1/invoices/from-order/{orderId}
+GET    /api/v1/invoices
+GET    /api/v1/invoices/{id}
+GET    /api/v1/invoices/{id}/tax-summary
+PATCH  /api/v1/invoices/{id}/cancel
+
+SCHEME APIs:
+POST   /api/v1/schemes
+GET    /api/v1/schemes
+GET    /api/v1/schemes/{id}
+PUT    /api/v1/schemes/{id}
+PATCH  /api/v1/schemes/{id}/status
+POST   /api/v1/schemes/simulate
+POST   /api/v1/orders/{orderId}/apply-schemes
+GET    /api/v1/retailers/{retailerId}/eligible-schemes
+
+CLAIM APIs:
+POST   /api/v1/claims
+GET    /api/v1/claims
+GET    /api/v1/claims/{id}
+PATCH  /api/v1/claims/{id}/approve
+PATCH  /api/v1/claims/{id}/reject
+POST   /api/v1/claims/{id}/attachments
+GET    /api/v1/claims/reports/summary
+
+WARRANTY APIs FOR FMCD:
+POST /api/v1/warranties
+GET  /api/v1/warranties/{serialNumber}
+POST /api/v1/warranty-claims
+
+PRODUCT RECALL APIs FOR OTC PHARMA:
+POST /api/v1/product-recalls
+GET  /api/v1/product-recalls
+GET  /api/v1/product-recalls/{id}
+PATCH /api/v1/product-recalls/{id}/close
+
+SFA APIs:
+GET    /api/v1/sfa/my-beats
+GET    /api/v1/sfa/today-route
+POST   /api/v1/sfa/check-in
+POST   /api/v1/sfa/check-out
+POST   /api/v1/sfa/retailer-visit
+POST   /api/v1/sfa/orders
+POST   /api/v1/sfa/expenses
+GET    /api/v1/sfa/tasks
+PATCH  /api/v1/sfa/tasks/{id}/complete
+GET    /api/v1/sfa/supervisor/dashboard
+
+RETAILER APP APIs:
+GET    /api/v1/retailer-app/home
+GET    /api/v1/retailer-app/products
+GET    /api/v1/retailer-app/recommended-products
+GET    /api/v1/retailer-app/schemes
+POST   /api/v1/retailer-app/cart/items
+GET    /api/v1/retailer-app/cart
+POST   /api/v1/retailer-app/orders
+GET    /api/v1/retailer-app/orders
+GET    /api/v1/retailer-app/orders/{id}
+POST   /api/v1/retailer-app/complaints
+GET    /api/v1/retailer-app/loyalty
+
+LOYALTY APIs:
+POST   /api/v1/loyalty/accounts
+GET    /api/v1/loyalty/accounts/{retailerId}
+POST   /api/v1/loyalty/earn
+POST   /api/v1/loyalty/redeem
+GET    /api/v1/loyalty/transactions
+
+COMPLAINT APIs:
+POST   /api/v1/complaints
+GET    /api/v1/complaints
+GET    /api/v1/complaints/{id}
+PATCH  /api/v1/complaints/{id}/assign
+PATCH  /api/v1/complaints/{id}/resolve
+PATCH  /api/v1/complaints/{id}/close
+
+AI APIs:
+GET    /api/v1/ai/product-recommendations?retailerId=
+GET    /api/v1/ai/outlet-pulse/{retailerId}
+POST   /api/v1/ai/route-optimization
+POST   /api/v1/ai/scheme-simulation
+GET    /api/v1/ai/sales-analyzer
+POST   /api/v1/ai/target-disaggregation
+GET    /api/v1/ai/smart-nudges
+GET    /api/v1/ai/supervisor-insights
+
+ANALYTICS APIs:
+GET    /api/v1/analytics/sales-summary
+GET    /api/v1/analytics/distributor-performance
+GET    /api/v1/analytics/retailer-performance
+GET    /api/v1/analytics/product-performance
+GET    /api/v1/analytics/scheme-performance
+GET    /api/v1/analytics/stock-movement
+GET    /api/v1/analytics/sfa-productivity
+GET    /api/v1/analytics/claims-summary
+
+INTEGRATION APIs:
+POST   /api/v1/webhooks
+GET    /api/v1/webhooks
+POST   /api/v1/integrations/erp/push-order
+POST   /api/v1/integrations/erp/push-invoice
+POST   /api/v1/integrations/tax/validate-gstin
+POST   /api/v1/integrations/payment/callback
+
+TESTING
+
+Create tests for:
+- auth login
+- distributor creation
+- retailer creation
+- product creation
+- stock-in
+- order creation
+- scheme simulation
+- invoice generation
+- claim submission
+- warranty creation
+- near-expiry inventory query
+- product recall creation
+
+Use:
+- JUnit 5
+- MockMvc
+- Testcontainers for PostgreSQL if possible
+
+DOCKER
+
+Create Dockerfile.
+
+Create docker-compose.yml with:
+- app
+- PostgreSQL
+- Redis
+
+DOCUMENTATION
+
+Create README.md with:
+- project overview
+- architecture
+- modules
+- setup instructions
+- how to run with Docker Compose
+- default admin credentials
+- Swagger URL
+- sample curl commands
+- industry vertical explanation
+- API-first design principles
+- important business rules
+- future microservice split strategy
+
+Create Swagger/OpenAPI documentation automatically.
+
+QUALITY REQUIREMENTS
+
+- Do not create only placeholder controllers.
+- Implement meaningful business logic where practical.
+- Complex parts like AI, ERP, payment, SMS and WhatsApp can be adapter interfaces with mock implementations.
+- Keep all endpoints working.
+- Use DTOs.
+- Use validation annotations.
+- Use service layer.
+- Use repositories only in service layer.
+- Use transactions properly.
+- Use global exception handling.
+- Use consistent API responses.
+- Use clean naming.
+- Use enums where useful.
+- Use BigDecimal for money.
+- Use Instant/LocalDateTime properly.
+- Use Flyway migrations.
+- Use seed data.
+- Include Swagger.
+- Include tests.
+- Include Docker Compose.
+- Include README.
+
+DELIVERABLE
+
+Generate the complete working codebase.
+
+After generating the code, show:
+
+1. Project structure
+2. How to run locally
+3. How to run using Docker Compose
+4. Swagger URL
+5. Default admin login
+6. Key APIs
+7. Sample curl commands
+8. What is fully implemented
+9. What is structurally ready as placeholder
+10. Suggested next development steps
+
+Do not skip files.
+Do not only describe architecture.
+Write the actual working code.
+
+If the output becomes too large, continue file by file until the full project is generated.

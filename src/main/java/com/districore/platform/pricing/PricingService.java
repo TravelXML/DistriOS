@@ -58,8 +58,15 @@ public class PricingService {
     }
 
     public List<PriceListItemResponse> getProductPrices(String productId) {
-        return itemRepository.findAll().stream()
-                .filter(item -> item.getProduct().getId().toString().equals(productId) && TenantContext.getTenantId().equals(item.getTenantId()))
+        return itemRepository.findByProductIdAndTenantId(UUID.fromString(productId), TenantContext.getTenantId()).stream()
+                .map(item -> new PriceListItemResponse(item.getId().toString(), item.getPriceList().getId().toString(), item.getProduct().getId().toString(), item.getPrice(), item.getPriceType()))
+                .collect(Collectors.toList());
+    }
+
+    public List<PriceListItemResponse> getRetailerApplicablePrices(String retailerId) {
+        List<PriceList> lists = priceListRepository.findByRetailerIdAndTenantId(retailerId, TenantContext.getTenantId());
+        return lists.stream()
+                .flatMap(priceList -> itemRepository.findByPriceListId(priceList.getId()).stream())
                 .map(item -> new PriceListItemResponse(item.getId().toString(), item.getPriceList().getId().toString(), item.getProduct().getId().toString(), item.getPrice(), item.getPriceType()))
                 .collect(Collectors.toList());
     }

@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     List<Invoice> findByTenantId(String tenantId);
     Optional<Invoice> findByIdAndTenantId(UUID id, String tenantId);
+    Optional<Invoice> findByOrderIdAndTenantId(String orderId, String tenantId);
 }

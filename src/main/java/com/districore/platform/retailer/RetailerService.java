@@ -2,6 +2,10 @@ package com.districore.platform.retailer;
 
 import com.districore.platform.common.ResourceNotFoundException;
 import com.districore.platform.common.TenantContext;
+import com.districore.platform.order.OrderRepository;
+import com.districore.platform.order.OrderResponse;
+import com.districore.platform.scheme.SchemeRepository;
+import com.districore.platform.scheme.SchemeResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +19,16 @@ public class RetailerService {
     private final RetailerRepository repository;
     private final RetailerKycRepository kycRepository;
     private final RetailerDrugLicenseRepository licenseRepository;
+    private final OrderRepository orderRepository;
+    private final SchemeRepository schemeRepository;
 
-    public RetailerService(RetailerRepository repository, RetailerKycRepository kycRepository, RetailerDrugLicenseRepository licenseRepository) {
+    public RetailerService(RetailerRepository repository, RetailerKycRepository kycRepository, RetailerDrugLicenseRepository licenseRepository,
+                           OrderRepository orderRepository, SchemeRepository schemeRepository) {
         this.repository = repository;
         this.kycRepository = kycRepository;
         this.licenseRepository = licenseRepository;
+        this.orderRepository = orderRepository;
+        this.schemeRepository = schemeRepository;
     }
 
     public RetailerResponse createRetailer(CreateRetailerRequest request) {
@@ -97,6 +106,20 @@ public class RetailerService {
     public RetailerLedgerResponse getLedger(UUID id) {
         Retailer retailer = findById(id);
         return new RetailerLedgerResponse(retailer.getId().toString(), retailer.getName(), 0, 0);
+    }
+
+    public java.util.List<OrderResponse> listOrders(UUID retailerId) {
+        return orderRepository.findByTenantId(TenantContext.getTenantId()).stream()
+                .filter(order -> retailerId.toString().equals(order.getRetailerId()))
+                .map(order -> new OrderResponse(order.getId().toString(), order.getRetailerId(), order.getDistributorId(), order.getStatus(), order.getSource(), order.getLineItems().stream().map(item -> new com.districore.platform.order.OrderLineResponse(item.getProduct().getId().toString(), item.getQuantity(), item.getUnitPrice(), item.getTotalPrice())).collect(Collectors.toList())))
+                .collect(Collectors.toList());
+    }
+
+    public java.util.List<SchemeResponse> listEligibleSchemes(UUID retailerId) {
+        findById(retailerId);
+        return schemeRepository.findByTenantId(TenantContext.getTenantId()).stream()
+                .map(scheme -> new SchemeResponse(scheme.getId().toString(), scheme.getName(), scheme.getType(), scheme.isActive()))
+                .collect(Collectors.toList());
     }
 
     private Retailer findById(UUID id) {

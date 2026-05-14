@@ -2,6 +2,7 @@ package com.districore.platform.common;
 
 public final class TenantContext {
     private static final ThreadLocal<String> TENANT = new ThreadLocal<>();
+    private static final String DEFAULT_TENANT = "default";
 
     private TenantContext() {}
 
@@ -10,7 +11,8 @@ public final class TenantContext {
     }
 
     public static String getTenantId() {
-        return TENANT.get();
+        String tenantId = TENANT.get();
+        return tenantId != null && !tenantId.isBlank() ? tenantId : DEFAULT_TENANT;
     }
 
     public static void clear() {

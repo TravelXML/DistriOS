@@ -33,5 +33,5 @@ public class Claim extends TenantAwareEntity {
 
     private String orderId;
     private String reason;
-    private Instant createdAt = Instant.now();
+    private String idempotencyKey;
 }

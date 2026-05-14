@@ -32,4 +32,13 @@ public class PricingController {
                 .data(service.calculatePrice(request))
                 .build());
     }
+
+    @GetMapping("/retailers/{retailerId}/applicable-prices")
+    public ResponseEntity<ApiResponse<java.util.List<PriceListItemResponse>>> retailerPrices(@PathVariable String retailerId) {
+        return ResponseEntity.ok(ApiResponse.<java.util.List<PriceListItemResponse>>builder()
+                .success(true)
+                .message("Applicable prices retrieved")
+                .data(service.getRetailerApplicablePrices(retailerId))
+                .build());
+    }
 }

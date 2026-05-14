@@ -61,4 +61,23 @@ public class ProductController {
                 .data(service.updateStatus(id, request))
                 .build());
     }
+
+    @PostMapping("/{productId}/serial-numbers")
+    public ResponseEntity<ApiResponse<ProductSerialNumberResponse>> addSerialNumber(@PathVariable UUID productId,
+                                                                                     @Valid @RequestBody ProductSerialNumberRequest request) {
+        return ResponseEntity.ok(ApiResponse.<ProductSerialNumberResponse>builder()
+                .success(true)
+                .message("Serial number added")
+                .data(service.addSerialNumber(productId, request))
+                .build());
+    }
+
+    @GetMapping("/{productId}/serial-numbers")
+    public ResponseEntity<ApiResponse<java.util.List<ProductSerialNumberResponse>>> getSerialNumbers(@PathVariable UUID productId) {
+        return ResponseEntity.ok(ApiResponse.<java.util.List<ProductSerialNumberResponse>>builder()
+                .success(true)
+                .message("Serial numbers retrieved")
+                .data(service.listSerialNumbers(productId))
+                .build());
+    }
 }

@@ -46,5 +46,6 @@ public class InventoryTransaction extends TenantAwareEntity {
 
     private BigDecimal quantity;
     private String referenceId;
+    private String idempotencyKey;
     private Instant transactionDate = Instant.now();
 }

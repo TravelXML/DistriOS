@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface PriceListItemRepository extends JpaRepository<PriceListItem, UUID> {
     List<PriceListItem> findByPriceListId(UUID priceListId);
+    List<PriceListItem> findByProductIdAndTenantId(UUID productId, String tenantId);
 }

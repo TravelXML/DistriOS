@@ -96,4 +96,13 @@ public class InventoryController {
                 .data(service.expiredStock())
                 .build());
     }
+
+    @GetMapping("/products/{productId}/availability")
+    public ResponseEntity<ApiResponse<ProductAvailabilityResponse>> productAvailability(@PathVariable String productId) {
+        return ResponseEntity.ok(ApiResponse.<ProductAvailabilityResponse>builder()
+                .success(true)
+                .message("Product availability retrieved")
+                .data(service.getProductAvailability(productId))
+                .build());
+    }
 }

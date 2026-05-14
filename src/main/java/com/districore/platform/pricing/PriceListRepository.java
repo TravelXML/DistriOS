@@ -8,4 +8,6 @@ import java.util.UUID;
 public interface PriceListRepository extends JpaRepository<PriceList, UUID> {
     List<PriceList> findByTenantId(String tenantId);
     Optional<PriceList> findByIdAndTenantId(UUID id, String tenantId);
+    List<PriceList> findByRetailerIdAndTenantId(String retailerId, String tenantId);
+    List<PriceList> findByDistributorIdAndTenantId(String distributorId, String tenantId);
 }

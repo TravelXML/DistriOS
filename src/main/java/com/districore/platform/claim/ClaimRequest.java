@@ -12,4 +12,5 @@ public class ClaimRequest {
     private String orderId;
     @NotBlank
     private String reason;
+    private String idempotencyKey;
 }

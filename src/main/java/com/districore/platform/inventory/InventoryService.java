@@ -77,6 +77,15 @@ public class InventoryService {
     }
 
     public InventoryTransactionResponse adjustStock(StockMovementRequest request) {
+        if (request.getIdempotencyKey() != null) {
+            return transactionRepository.findByIdempotencyKeyAndTenantId(request.getIdempotencyKey(), TenantContext.getTenantId())
+                    .map(this::toResponse)
+                    .orElseGet(() -> createAdjustmentTransaction(request));
+        }
+        return createAdjustmentTransaction(request);
+    }
+
+    private InventoryTransactionResponse createAdjustmentTransaction(StockMovementRequest request) {
         Warehouse warehouse = warehouseRepository.findByIdAndTenantId(UUID.fromString(request.getWarehouseId()), TenantContext.getTenantId())
                 .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
         Product product = productRepository.findByIdAndTenantId(UUID.fromString(request.getProductId()), TenantContext.getTenantId())
@@ -88,6 +97,7 @@ public class InventoryService {
         transaction.setStockType(request.getStockType());
         transaction.setQuantity(request.getQuantity());
         transaction.setReferenceId(request.getReferenceId());
+        transaction.setIdempotencyKey(request.getIdempotencyKey());
         transaction.setTenantId(TenantContext.getTenantId());
         transactionRepository.save(transaction);
         return toResponse(transaction);
@@ -117,6 +127,20 @@ public class InventoryService {
 
     public List<InventoryTransactionResponse> expiredStock() {
         return listTransactions();
+    }
+
+    public ProductAvailabilityResponse getProductAvailability(String productId) {
+        List<InventoryTransaction> transactions = transactionRepository.findByProductIdAndTenantId(UUID.fromString(productId), TenantContext.getTenantId());
+        java.math.BigDecimal totalIn = transactions.stream()
+                .filter(tx -> tx.getTransactionType() == InventoryTransactionType.STOCK_IN || tx.getTransactionType() == InventoryTransactionType.ADJUSTMENT || tx.getTransactionType() == InventoryTransactionType.RETURN)
+                .map(InventoryTransaction::getQuantity)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+        java.math.BigDecimal totalOut = transactions.stream()
+                .filter(tx -> tx.getTransactionType() == InventoryTransactionType.STOCK_OUT || tx.getTransactionType() == InventoryTransactionType.DISPATCH || tx.getTransactionType() == InventoryTransactionType.DAMAGE || tx.getTransactionType() == InventoryTransactionType.EXPIRY)
+                .map(InventoryTransaction::getQuantity)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+        java.math.BigDecimal available = totalIn.subtract(totalOut);
+        return new ProductAvailabilityResponse(productId, totalIn, totalOut, available);
     }
 
     private InventoryTransactionResponse toResponse(InventoryTransaction transaction) {

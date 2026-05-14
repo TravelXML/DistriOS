@@ -19,11 +19,16 @@ public class ClaimService {
     }
 
     public ClaimResponse submitClaim(ClaimRequest request) {
+        if (request.getIdempotencyKey() != null) {
+            repository.findByIdempotencyKeyAndTenantId(request.getIdempotencyKey(), TenantContext.getTenantId())
+                    .ifPresent(claim -> { throw new ResourceNotFoundException("Claim already submitted for this idempotency key"); });
+        }
         Claim claim = new Claim();
         claim.setType(request.getType());
         claim.setStatus(ClaimStatus.OPEN);
         claim.setOrderId(request.getOrderId());
         claim.setReason(request.getReason());
+        claim.setIdempotencyKey(request.getIdempotencyKey());
         claim.setTenantId(TenantContext.getTenantId());
         repository.save(claim);
         return toResponse(claim);
