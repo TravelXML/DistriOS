@@ -1511,48 +1511,6 @@ Before production:
 
 ---
 
-## GitHub Topics
-
-Recommended repository topics:
-
-```text
-java
-spring-boot
-dms
-distribution-management
-distributor-management-system
-fmcg
-cpg
-fmcd
-otc-pharma
-rurban
-retail-tech
-sfa
-inventory-management
-order-management
-pricing-engine
-scheme-management
-claims-management
-multi-tenant
-api-first
-openapi
-swagger
-postgresql
-redis
-docker
-modular-monolith
-```
-
----
-
-## Suggested GitHub Description
-
-```text
-API-first Distribution Management System for FMCG, CPG, FMCD, OTC Pharma, rurban markets, and multi-company distributors, built with Java Spring Boot.
-```
-
----
-
 ## Contributing
 
 1. Follow the modular architecture.
