@@ -536,7 +536,7 @@ External system connectivity:
 
 ### UOM
 
-**Unit of Measure** — how a product is measured, stocked, or sold.
+**Unit of Measure** - how a product is measured, stocked, or sold.
 
 Examples:
 
@@ -546,7 +546,7 @@ PCS, KG, LTR, BOX, CASE, DOZEN
 
 ### HSN Code
 
-**Harmonized System of Nomenclature** — tax classification code used for GST and invoicing.
+**Harmonized System of Nomenclature** - tax classification code used for GST and invoicing.
 
 ### Pack Size
 
@@ -1381,7 +1381,7 @@ java -jar target/districore-api-0.1.0.jar
 
 ## Roadmap
 
-### Phase 1 — Core DMS
+### Phase 1 - Core DMS
 
 - Auth and RBAC
 - Company and tenant setup
@@ -1394,7 +1394,7 @@ java -jar target/districore-api-0.1.0.jar
 - Basic pricing
 - Basic invoice
 
-### Phase 2 — Commercial Engine
+### Phase 2 - Commercial Engine
 
 - Price list
 - Tax engine
@@ -1404,7 +1404,7 @@ java -jar target/districore-api-0.1.0.jar
 - Credit limit
 - Order confirmation and dispatch
 
-### Phase 3 — SFA and Retailer App
+### Phase 3 - SFA and Retailer App
 
 - Beat planning
 - Route planning
@@ -1415,7 +1415,7 @@ java -jar target/districore-api-0.1.0.jar
 - Cart and self-ordering
 - Loyalty and complaint management
 
-### Phase 4 — Industry-Specific Depth
+### Phase 4 - Industry-Specific Depth
 
 - FMCD serial number and warranty
 - OTC pharma batch, expiry, and recall
@@ -1423,7 +1423,7 @@ java -jar target/districore-api-0.1.0.jar
 - Multi-company distributor operations
 - Advanced warehouse and return flows
 
-### Phase 5 — AI and Analytics
+### Phase 5 - AI and Analytics
 
 - Product recommender
 - Outlet pulse
@@ -1434,7 +1434,7 @@ java -jar target/districore-api-0.1.0.jar
 - Smart nudges
 - Supervisor insights
 
-### Phase 6 — Enterprise Scale
+### Phase 6 - Enterprise Scale
 
 - Kafka / RabbitMQ
 - Outbox pattern
